@@ -1,0 +1,26 @@
+{
+  "name": "crawler-system",
+  "version": "1.0.0",
+  "description": "a nodejs crawler system with web supervisor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "crawler"
+  ],
+  "dependencies": {
+    "kcors": "^2.2.1",
+    "koa": "^2.4.1",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.1.0",
+    "koa-router": "^7.4.0",
+    "pidusage": "^2.0.17"
+  },
+  "author": "ycy",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  }
+}
