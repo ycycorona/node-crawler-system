@@ -4,7 +4,7 @@
     "module": "commonjs",
     "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./@types",
+    "declarationDir": "./pro_types",
     "sourceMap": true,
     "removeComments": true,
     "noImplicitAny": false,
@@ -17,12 +17,12 @@
     ]
   },
   "compileOnSave": true,
-  "includes": [
+  "include": [
     "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "@types"
+    "archive"
   ]
 }
