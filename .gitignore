@@ -24,3 +24,4 @@ app/view/*
 package-lock.json
 yarn.lock
 .gitkeep
+config/local.js
