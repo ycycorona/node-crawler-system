@@ -1,21 +1,30 @@
+import {isNullOrUndefined} from "util";
+
 interface Alarm {
-  alert();
+  alert(): any;
 }
 
 interface Light {
-  lightOn();
-  lightOff();
+  lightOn(): any;
+  lightOff(): any;
+}
+
+class Alarm {
+
 }
 
 class Car implements Alarm, Light {
-  alert() {
+  alert(): any {
     console.log('Car alert');
+    return undefined
   }
-  lightOn() {
+  lightOn(): any {
     console.log('Car light on');
+    return undefined
   }
-  lightOff() {
+  lightOff(): any {
     console.log('Car light off');
+    return undefined
   }
 }
 

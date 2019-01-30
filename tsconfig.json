@@ -7,14 +7,20 @@
     "declarationDir": "./pro_types",
     "sourceMap": true,
     "removeComments": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "typeRoots": [
       "node_modules/@types",
       "typings"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "src/*"
+      ]
+    }
   },
   "compileOnSave": true,
   "include": [

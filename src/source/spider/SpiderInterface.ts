@@ -27,5 +27,5 @@ export default interface SpiderInterface {
   persist(...args: any[]): Promise<boolean>
 
   // 最终执行函数
-  run(...args: any[]): Promise<boolean>
+  run(...args: any[]): Promise<any>
 }

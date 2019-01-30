@@ -22,6 +22,11 @@ let tom: Person = {
   hobby: [1,2,3]
 }
 
+let ycy: {
+  name: string
+  age: number
+}
+
 interface ArrayList {
   [index: number]: number | string
 }
@@ -30,7 +35,7 @@ const ArrayList: any[] = [1,'ycy']
 
 class Animal {
   static className = 'Animal'
-  public name;
+  public name: any;
   public constructor(name: string = 'undefined animal') {
     this.name = name;
   }
@@ -39,6 +44,6 @@ class Animal {
 
 const dog: Animal = new Animal()
 
-console.log(dog.name);
+ycy = {name:'12', age:12}
 
 

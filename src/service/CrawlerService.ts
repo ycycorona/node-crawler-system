@@ -5,7 +5,7 @@ import CrawlerScheduler from "../source/crawler/CrawlerScheduler"
 import pidusage = require("pidusage");
 
 interface HttpOption {
-  host: string,
+  host: string
   port: number
 }
 
