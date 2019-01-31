@@ -1,5 +1,6 @@
 import SpiderInterface from './SpiderInterface'
 import nanoid = require("nanoid");
+import {ModelType} from "common/interface"
 
 type SpiderStatus =
   'IDLE' // 进入空闲状态
@@ -21,11 +22,12 @@ export default class Spider implements SpiderInterface {
   // 当前类名
   readonly name: string = this.constructor.name
   // 模型属性
-  model: any
+  model: ModelType
   // 传递额外内容
   extra: any
-  //允许动态设置的属性
+  // 允许动态设置的属性
   url: string
+  // 网络请求的参数
   option: object
   /*蜘蛛当前状态*/
   status: SpiderStatus = 'IDLE'
@@ -90,7 +92,7 @@ export default class Spider implements SpiderInterface {
   /**
    * desc 数据提取
    */
-  async extract(rawData: any, model: any): Promise<{data: any; $dom?: any}> {
+  async extract(rawData: any, model: any): Promise<{data: any; $dom?: HTMLElement}> {
     // 如果是 HTMLSpider 中，则是返回 {data, $dom}
     return rawData
   }

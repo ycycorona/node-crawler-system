@@ -5,3 +5,7 @@ export interface IAxiosOpts {
   httpsAgent?: any
   interceptors?: (() => void)[]
 }
+
+export type ModelType = {
+  [propName: string]: string | ModelType
+}

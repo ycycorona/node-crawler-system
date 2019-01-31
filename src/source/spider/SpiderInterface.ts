@@ -1,3 +1,4 @@
+import {ModelType} from "common/interface"
 /**
  * @function 蜘蛛接口定义
  */
@@ -6,7 +7,7 @@ export default interface SpiderInterface {
   displayName: string
 
   // 模型属性
-  model: any
+  model: ModelType
 
   // 通过构造函数传入的外部信息
   extra?: any
