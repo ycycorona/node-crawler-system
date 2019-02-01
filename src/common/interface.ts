@@ -6,6 +6,10 @@ export interface IAxiosOpts {
   interceptors?: (() => void)[]
 }
 
-export type ModelType = {
-  [propName: string]: string | ModelType
+export interface mapType {
+  [propName: string]: any
+}
+
+export interface domMapType extends mapType{
+  [propName: string]: string | {selector: string; contextName?: string}
 }

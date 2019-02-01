@@ -1,7 +1,7 @@
 import Spider from '../Spider'
 import axios from 'utils/request/simulate-browser-axios'
 import {AxiosRequestConfig} from 'axios'
-import {ModelType} from "../../../common/interface";
+import {mapType} from 'common/interface'
 /**
  * desc 简单的基于 HTTP 的爬虫
  */
@@ -23,16 +23,20 @@ export default class TextSpider extends Spider {
         .catch(error => {
           reject(error) // 抓取数据失败，此时直接停止spider运行，并抛出错误
         })
-      resolve(data)
+      if (data.status !== 200) {
+        reject(data)
+      }
+
+      resolve(data.data)
     });
   }
 
   /**
    * 提取数据
-   * @param pageHTML
-   * @param model
+   * @param pageHTMLStr
+   * @param extractMap
    */
-  async extract(pageHTML: string, model: ModelType): Promise<{data: string}> {
-    return {data: pageHTML}
+  async extract(pageHTMLStr: string, extractMap: mapType): Promise<{data: string}> {
+    return {data: pageHTMLStr}
   }
 }

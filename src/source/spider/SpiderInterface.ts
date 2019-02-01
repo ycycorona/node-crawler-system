@@ -1,4 +1,4 @@
-import {ModelType} from "common/interface"
+import {mapType} from 'common/interface'
 /**
  * @function 蜘蛛接口定义
  */
@@ -6,8 +6,8 @@ export default interface SpiderInterface {
   // 爬虫展示名
   displayName: string
 
-  // 模型属性
-  model: ModelType
+  // 抽取map
+  extractMap: mapType
 
   // 通过构造函数传入的外部信息
   extra?: any

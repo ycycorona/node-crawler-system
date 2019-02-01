@@ -1,6 +1,6 @@
 import SpiderInterface from './SpiderInterface'
 import nanoid = require("nanoid");
-import {ModelType} from "common/interface"
+import {mapType} from 'common/interface'
 
 type SpiderStatus =
   'IDLE' // 进入空闲状态
@@ -22,7 +22,7 @@ export default class Spider implements SpiderInterface {
   // 当前类名
   readonly name: string = this.constructor.name
   // 模型属性
-  model: ModelType
+  extractMap: mapType
   // 传递额外内容
   extra: any
   // 允许动态设置的属性
@@ -92,15 +92,17 @@ export default class Spider implements SpiderInterface {
   /**
    * desc 数据提取
    */
-  async extract(rawData: any, model: any): Promise<{data: any; $dom?: HTMLElement}> {
+  async extract(rawData: any, extractMap: mapType): Promise<{data: any; $dom?: CheerioStatic}> {
     // 如果是 HTMLSpider 中，则是返回 {data, $dom}
-    return rawData
+    return {
+      data: rawData
+    }
   }
 
   /**
    * desc 数据解析
    */
-  async parse(extractedData: {data: any}, $dom?: HTMLElement): Promise<any> {
+  async parse(extractedData: any, $dom?: CheerioStatic): Promise<any> {
     return extractedData;
   }
 
@@ -153,7 +155,7 @@ export default class Spider implements SpiderInterface {
     // 从界面中抽取出选定元素
     let extractedDataOrObject: any = await this.extract(
       beforeExtractedRawData,
-      this.model
+      this.extractMap
     )
 
     let parsedData: any
@@ -170,7 +172,7 @@ export default class Spider implements SpiderInterface {
       );
     } else {
       // 对元素进行解析
-      parsedData = await this.parse(extractedDataOrObject);
+      parsedData = await this.parse(extractedDataOrObject.data);
     }
 
     this.status = 'VALIDATE'
