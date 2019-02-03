@@ -74,6 +74,17 @@ export default class Spider implements SpiderInterface {
     return this
   }
 
+  setExtractMap(extractMap: mapType) {
+    extractMap && (this.extractMap = extractMap)
+    return this
+  }
+
+
+  setParse(parse: (extractedData: any, $?: CheerioStatic) => Promise<any>) {
+    parse && (this.parse = parse)
+    return this
+  }
+
   /**
    * Description 数据抓取
    */

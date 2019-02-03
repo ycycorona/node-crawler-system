@@ -13,7 +13,7 @@ export default class TextSpider extends Spider {
    * @param axiosOpts
    * @returns {Promise}
    */
-  async fetch(url: string, axiosOpts?: AxiosRequestConfig): Promise<string> {
+  async fetch(url: string, axiosOpts?: AxiosRequestConfig | object): Promise<string> {
     const defaultAxiosOpts = {
       url: url,
       method: 'GET'
