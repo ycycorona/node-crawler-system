@@ -26,6 +26,7 @@
     "nanoid": "^2.0.1",
     "pidusage": "^2.0.17",
     "proxy-agent": "^3.0.3",
+    "puppeteer": "^1.12.1",
     "qs": "^6.6.0"
   },
   "author": "ycy",
@@ -42,6 +43,7 @@
     "@types/mocha": "^5.2.5",
     "@types/nanoid": "^1.2.0",
     "@types/node": "^10.12.18",
-    "@types/pidusage": "^2.0.1"
+    "@types/pidusage": "^2.0.1",
+    "@types/puppeteer": "^1.12.0"
   }
 }

@@ -1,7 +1,7 @@
 import * as _config from 'config'
 import axios, {AxiosInstance} from 'axios'
 import {IAxiosOpts} from 'common/interface'
-let config: any = _config
+const config: any = _config
 
 export default(options?: IAxiosOpts): AxiosInstance => {
   const axiosOpts: IAxiosOpts = {}

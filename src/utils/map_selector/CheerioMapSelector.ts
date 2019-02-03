@@ -12,7 +12,7 @@ export default class CheerioMapSelector extends MapHandler{
   // 定义其他小作用域
   private contextMap: contextMapType
 
-  // 文档的大作用域
+  // 已经用文档作为context初始化过的CheerioStatic实例
   readonly $: CheerioStatic
 
   constructor(readonly docStr: string,

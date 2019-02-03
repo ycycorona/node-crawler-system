@@ -1,5 +1,4 @@
 import TextSpider from 'source/spider/web/TextSpider'
-import * as $ from 'cheerio'
 import {domMapType} from 'common/interface'
 import CheerioMapSelector, {selectorStr, contextMapType} from 'utils/map_selector/CheerioMapSelector'
 
@@ -23,9 +22,11 @@ export default class HTMLSpider extends TextSpider {
     this.extractMap = extractMap
   }
 
-  async extract(pageHTMLStr: string, extractMap: domMapType): Promise<{data: any; $dom?: CheerioStatic}> {
+  async extract(pageHTMLStr: string, extractMap: domMapType): Promise<{data: any; $?: CheerioStatic}> {
     const cheerioMapSelector = new CheerioMapSelector(pageHTMLStr, extractMap, this.contextMap)
     const extraRes = cheerioMapSelector.run()
-    return {data: extraRes, $dom: cheerioMapSelector.$}
+    return {data: extraRes, $: cheerioMapSelector.$}
   }
+
+  parse: (extractedData: {[propName: string]: Cheerio}, $?: CheerioStatic) => Promise<any>
 }

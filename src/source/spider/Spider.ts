@@ -92,8 +92,8 @@ export default class Spider implements SpiderInterface {
   /**
    * desc 数据提取
    */
-  async extract(rawData: any, extractMap: mapType): Promise<{data: any; $dom?: CheerioStatic}> {
-    // 如果是 HTMLSpider 中，则是返回 {data, $dom}
+  async extract(rawData: any, extractMap: mapType): Promise<{data: any; $?: CheerioStatic}> {
+    // 如果是 HTMLSpider 中，则是返回 {data, $}
     return {
       data: rawData
     }
@@ -102,7 +102,7 @@ export default class Spider implements SpiderInterface {
   /**
    * desc 数据解析
    */
-  async parse(extractedData: any, $dom?: CheerioStatic): Promise<any> {
+  async parse(extractedData: any, $?: CheerioStatic): Promise<any> {
     return extractedData;
   }
 
@@ -164,7 +164,7 @@ export default class Spider implements SpiderInterface {
     if (
       extractedDataOrObject && typeof extractedDataOrObject === 'object' &&
       extractedDataOrObject.hasOwnProperty('data') &&
-      extractedDataOrObject.hasOwnProperty('$dom')
+      extractedDataOrObject.hasOwnProperty('$')
     ) {
       parsedData = await this.parse(
         extractedDataOrObject.data,

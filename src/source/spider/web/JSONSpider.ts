@@ -3,9 +3,9 @@ import axios from 'utils/request/simulate-browser-axios'
 import {AxiosRequestConfig} from 'axios'
 import {mapType} from 'common/interface'
 /**
- * desc 简单的基于 HTTP 的爬虫
+ * desc 简单的基于HTTP的JSON爬虫
  */
-export default class TextSpider extends Spider {
+export default class JSONSpider extends Spider {
   option: AxiosRequestConfig
   /**
    * Description 数据抓取
@@ -13,7 +13,7 @@ export default class TextSpider extends Spider {
    * @param axiosOpts
    * @returns {Promise}
    */
-  async fetch(url: string, axiosOpts?: AxiosRequestConfig): Promise<string> {
+  async fetch(url: string, axiosOpts?: AxiosRequestConfig): Promise<any> {
     const defaultAxiosOpts = {
       url: url,
       method: 'GET'
@@ -26,18 +26,19 @@ export default class TextSpider extends Spider {
       if (data.status !== 200) {
         reject(data)
       }
-
-      // 保证返回的是字符串
-      resolve(typeof data.data === 'string' ? data.data : JSON.stringify(data.data))
+      // 保证返回的是JSON对象
+      resolve(data.data)
     });
   }
 
   /**
    * 提取数据
-   * @param pageHTMLStr
+   * @param JSONObj
    * @param extractMap
    */
-  async extract(pageHTMLStr: string, extractMap: mapType): Promise<{data: string}> {
-    return {data: pageHTMLStr}
+  async extract(JSONObj: object, extractMap: mapType): Promise<{data: object}> {
+    return {data: JSONObj}
   }
+
+  parse: (extractedData: {[propName: string]: any} | any[]) => Promise<any>
 }

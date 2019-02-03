@@ -7,8 +7,9 @@ module.exports = {
     proxyPort: '10091',
   },
   chromeOptions: {
+    executablePath: 'D:\\code\\personal\\flights-crwaler\\node_modules\\puppeteer\\.local-chromium\\win64-609904\\chrome-win\\chrome.exe',
     ignoreHTTPSErrors: true,
-    headless: true,
+    headless: false,
     args: ['--proxy-server=socks5://127.0.0.1:10091'],
     defaultViewport: {
       width: 1920,
