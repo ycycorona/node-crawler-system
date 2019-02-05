@@ -47,10 +47,10 @@ export default class puppeteerSpider extends HTMLSpider {
       handleRes.error = err
     })
 
-    if (handleRes.error) {throw handleRes.error}
+    if (!page || handleRes.error) { throw handleRes.error }
 
     const HTMLStr = await new Promise((resolve, reject) => {
-      (<Page>page).on('response', async (response) => {
+      page.on('response', async (response) => {
         const url = response.url()
         if (url.match(/api\/\w+\/products/)) {
           // 航班信息主数据接口
@@ -65,7 +65,7 @@ export default class puppeteerSpider extends HTMLSpider {
         }
       })
       // 航班信息页面地址
-      const url = `http://flights.ctrip.com/itinerary/oneway/${flightLine[0]}-${flightLine[1]}?date=${date}`
+      const url = '11'//`http://flights.ctrip.com/itinerary/oneway/${flightLine[0]}-${flightLine[1]}?date=${date}`
       page.goto(url, {
         timeout: 30000,
       }).catch(e => {

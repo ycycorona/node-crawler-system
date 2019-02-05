@@ -7,9 +7,9 @@ export interface IAxiosOpts {
 }
 
 export interface mapType {
-  [propName: string]: any
+  [key: string]: any
 }
 
 export interface domMapType extends mapType{
-  [propName: string]: string | {selector: string; contextName?: string}
+  [key: string]: string | {selector: string; contextName?: string}
 }
