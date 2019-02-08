@@ -15,7 +15,7 @@ export default class HTMLSpider extends TextSpider {
    */
   constructor(
               displayName: string = 'spider',
-              extractMap: domMapType,
+              extractMap?: domMapType,
               contextMap?: contextMapType,
               extra?: any) {
     super(displayName, extra)
@@ -28,5 +28,7 @@ export default class HTMLSpider extends TextSpider {
     return {data: extraRes, $: cheerioMapSelector.$}
   }
 
-  parse: (extractedData: {[propName: string]: Cheerio}, $?: CheerioStatic) => Promise<any>
+  parse (extractedData: {[propName: string]: Cheerio}, $?: CheerioStatic) : Promise<any> {
+    return Promise.resolve()
+  }
 }

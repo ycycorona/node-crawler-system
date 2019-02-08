@@ -15,6 +15,13 @@ export default class CheerioMapSelector extends MapHandler{
   // 已经用文档作为context初始化过的CheerioStatic实例
   readonly $: CheerioStatic
 
+  /**
+   *
+   * @param {string} docStr - 要解析的html
+   * @param {domMapType} map - 名-选择器 map
+   * @param {contextMapType} contextMap - 自定义的上下文（选择器）
+   * @param {funtion} handler - 提取函数
+   */
   constructor(readonly docStr: string,
               map: domMapType,
               contextMap?: contextMapType,
