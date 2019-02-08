@@ -4,7 +4,7 @@ import CheerioMapSelector, {selectorStr, contextMapType} from 'utils/map_selecto
 
 export default class HTMLSpider extends TextSpider {
   // 定义其他小作用域
-  private contextMap: contextMapType
+  protected contextMap: contextMapType
 
   /**
    * 构造函数
@@ -19,7 +19,8 @@ export default class HTMLSpider extends TextSpider {
               contextMap?: contextMapType,
               extra?: any) {
     super(displayName, extra)
-    this.extractMap = extractMap
+    extractMap && (this.extractMap = extractMap)
+    contextMap && (this.contextMap = contextMap)
   }
 
   async extract(pageHTMLStr: string, extractMap: domMapType): Promise<{data: any; $?: CheerioStatic}> {

@@ -11,9 +11,6 @@ type SpiderStatus =
 
 /**
  * Description 蜘蛛中心定义类
- *
- * *Error Handling* 在生产环境下，蜘蛛应该由爬虫统一调度，因此蜘蛛并不需要在本层进行容错，而应该直接抛出异常
- *
  */
 
 export default class Spider implements SpiderInterface {
@@ -58,18 +55,18 @@ export default class Spider implements SpiderInterface {
    * @param url
    * @param option
    */
-  setRequest(url: string, option: object = {}): Spider {
+  setRequest(url: string, option: object = {}): this {
     // 设置路径与配置
-    url && (this.url = url);
+    url && (this.url = url)
     option && (this.option = option)
-    return this;
+    return this
   }
 
   /**
    * desc 设置当前蜘蛛的额外信息，额外信息一部分是初始化时候的静态配置，一部分来源于上一个蜘蛛的动态信息
    * @param extra
    */
-  setExtra(extra?: any) {
+  setExtra(extra?: any): this{
     extra && (this.extra = Object.assign({}, this.extra, extra));
     return this
   }
