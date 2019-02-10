@@ -1,9 +1,10 @@
-interface Person {
+
+export type Person = {
   readonly id: string
   name: string
   age: number
   gender?: number
-  [propName: string]: any
+  [key: string]: any
 }
 
 function reverse(x: number): number;
@@ -13,7 +14,6 @@ function reverse(x: number | string): number | string {
 
 }
 
-const Person = 123
 let tom: Person = {
   id: 'SDFED',
   name: 'grace',
@@ -45,5 +45,7 @@ class Animal {
 const dog: Animal = new Animal()
 
 ycy = {name:'12', age:12}
+
+export default ycy
 
 

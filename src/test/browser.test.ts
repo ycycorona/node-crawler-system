@@ -6,13 +6,14 @@ import Logger from 'utils/logger'
 const logger = Logger(__filename)
 const config: any = _config
 
-const testUrl = 'http://api.k780.com/?app=weather.future&weaid=1&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json'
+const testUrl = 'https://news.ycombinator.com/item?id=19113635'
 
 describe('browser', function() {
   it('run', async function() {
     let flag = true
     const browser = await getBrowser(config.chromeOptions)
     if (browser) {
+
       const pages = await browser.pages()
       const page = await browser.newPage().catch((err:any) => {
         logger.error('创建新页面失败', err)
@@ -69,6 +70,23 @@ describe.only('puppeteerSpider', function() {
       .catch(error => {
 
       })
+  })
+})
+
+describe.only('puppeteer', function() {
+  it('run', async function() {
+    let flag = true
+    const browser = await getBrowser(config.chromeOptions)
+    if (browser) {
+      const puppeteerSpider = await new PuppeteerSpider().setRequest(testUrl).setBrowser(browser)
+      puppeteerSpider.parse = async function(extractData, $) {
+        return $
+      }
+      puppeteerSpider.run()
+      .then(data => {
+        console.log(data)
+      })
+    }
   })
 })
 
