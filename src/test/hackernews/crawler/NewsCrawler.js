@@ -1,7 +1,5 @@
-// @flow
-
-import Crawler from "../../../src/source/crawler/Crawler";
-import TopicSpider from "../../../src/source/spider/web/HeadlessChromeSpider";
+import Crawler from "source/crawler/Crawler"
+import TopicSpider from "../spider/web/HeadlessChromeSpider"
 
 /**
  * Description 新闻爬虫

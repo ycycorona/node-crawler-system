@@ -123,7 +123,7 @@ export default class Crawler {
   /**
    * @desc 执行单个爬虫
    */
-  async run(isPersist: boolean): Promise<boolean> {
+  async run(isPersist: boolean=true): Promise<boolean> {
     // 重置最后启动时间
     this.lastStartTime = new Date()
 

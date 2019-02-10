@@ -38,7 +38,7 @@ export default class MapHandler {
   }
 
   run() {
-    if (!this.map) { throw Error('map未指定')}
+    // if (!this.map) { throw Error('map未指定')}
     for(const key in this.map) {
       const itemRes = this.handler(this.map[key])
       this.appendItemResToMapRes(key, itemRes)

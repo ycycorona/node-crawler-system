@@ -13,12 +13,17 @@ export default class puppeteerSpider extends HTMLSpider {
   browser: Browser
 
   constructor(displayName: string = 'spider',
-              extractMap: domMapType,
+              extractMap?: domMapType,
               browser?: Browser,
               contextMap?: contextMapType,
               extra?: any) {
     super(displayName, extractMap, contextMap, extra)
     browser && (this.browser = browser)
+  }
+
+  setBrowser(browser: Browser): this {
+    browser && (this.browser = browser)
+    return this
   }
 
   // 获取新浏览器实例
@@ -49,28 +54,15 @@ export default class puppeteerSpider extends HTMLSpider {
 
     if (!page || handleRes.error) { throw handleRes.error }
 
-    const HTMLStr = await new Promise((resolve, reject) => {
-      page.on('response', async (response) => {
-        const url = response.url()
-        if (url.match(/api\/\w+\/products/)) {
-          // 航班信息主数据接口
-          if (response.status() === 200) {
-            resolve(await response.text())
-          } else {
-            resolve(null)
-            logger.error(`${url}页面json获取失败`)
-          }
-        } else {
-
-        }
-      })
-      // 航班信息页面地址
-      const url = '11'//`http://flights.ctrip.com/itinerary/oneway/${flightLine[0]}-${flightLine[1]}?date=${date}`
-      page.goto(url, {
-        timeout: 30000,
-      }).catch(e => {
-        logger.error(`打开${url}失败`, e)
-      })
+    // 航班信息页面地址
+    await page.goto(url, {
+      timeout: 30000,
+    }).catch(e => {
+      logger.error(`打开${url}失败`, e)
+      throw e
     })
+
+    const pageDocStr = await page.mainFrame().content()
+    return pageDocStr
   }
 }

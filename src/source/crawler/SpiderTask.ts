@@ -63,7 +63,7 @@ export default class SpiderTask {
    * desc 执行该任务
    * @return {Promise.<void>}
    */
-  async run(isPersist: boolean): Promise<Array<Request>> {
+  async run(isPersist: boolean=true): Promise<Array<Request>> {
     const { url, option, extra } = this.request
 
     // 设置爬虫的请求
