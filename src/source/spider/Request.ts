@@ -4,18 +4,18 @@
 export default class Request {
   /** 通用请求属性 */
   // 目标
-  target: any
+  target?: any
 
   // 配置
-  option: {
+  option?: {
     [x: string]: any
   }
 
   // 其他全局信息
-  extra: any
+  extra?: any
 
   /** Web 专用属性 */
-  url: string
+  url?: string
 
   /**
  * Description 判断输入的 Request 对象是否有效

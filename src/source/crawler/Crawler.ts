@@ -76,9 +76,9 @@ export default class Crawler {
 
   /**
  * @desc 待复写函数，设置当前的待处理的 URL 或者 Generator
- * @return {Crawler}
+ * @return {this <T extends Crawler>}
  */
-  setRequests(requests: Request[]) {
+  setRequests(requests: Request[]) : this {
     if (!Array.isArray(requests) || requests.length === 0) {
       throw new Error('请输入请求目标数组')
     }
@@ -95,9 +95,9 @@ export default class Crawler {
   /**
  * @desc 添加蜘蛛到当前爬虫流中
  * @param {Spider} spider
- * @returns {Crawler}
+ * @returns {this <T extends Crawler>}
  */
-  setSpider(spider: Spider): Crawler {
+  setSpider(spider: Spider): this {
     this.spiders.push(spider)
     return this
   }

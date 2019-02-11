@@ -20,6 +20,8 @@ export default class Spider implements SpiderInterface {
   readonly name: string = this.constructor.name
   // 模型属性
   extractMap: mapType
+  // 蜘蛛依赖图谱
+  dependencies: Array<Spider> = []
   // 传递额外内容
   extra: any
   // 允许动态设置的属性

@@ -3,7 +3,21 @@
   // 悬停以查看现有属性的描述。
   // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-  "configurations": [{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "run_crawler_server",
+      "program": "${workspaceFolder}\\src\\test\\hackernews\\run_crawler_server.ts",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "env": {
+        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+      },
+    },
+
+    {
       "type": "node",
       "request": "launch",
       "name": "NewsCommentSpiderTests",
@@ -24,11 +38,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "启动程序",
-      "program": "${workspaceFolder}\\index.js",
+      "name": "test",
+      "program": "${workspaceFolder}\\src\\common\\HandleRes.ts",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
-      ]
+      ],
+      "env": {
+        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+      },
     },
 
   ]
