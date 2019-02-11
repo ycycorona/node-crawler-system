@@ -9,7 +9,7 @@ type ScheduleOptionType = {
  * @desc 爬虫注册与调度
  */
 export default class CrawlerScheduler {
-  // 存放所有爬虫的信息
+  // 存放所有爬虫的信息 K:V 结构
   crawlers: { [key: string]: Crawler } = {}
 
   // 存放爬虫的最后一次运行的信息
@@ -71,18 +71,19 @@ export default class CrawlerScheduler {
 
     for (const crawlerName of crawlerNames) {
       let crawler: Crawler = this.crawlers[crawlerName]
-      // 当爬虫尚未运行时运行该爬虫
+      // 该爬虫尚未运行时，运行该爬虫
       if (!crawler.isRunning) {
         // 异步运行该爬虫
-        crawler.run().then(
-          result => {}
-        )
-        .catch(err => {
-          // 出现异常之后，重置当前爬虫
-          crawler.reset()
-          //todo 正常的执行流程下不应该在此处报错
-          console.error(err)
-        })
+        crawler.run()
+          .then(
+            result => { }
+          )
+          .catch(err => {
+            // 出现异常之后，重置当前爬虫
+            crawler.reset()
+            //todo 正常的执行流程下不应该在此处报错
+            console.error(err)
+          })
       }
     }
 

@@ -69,7 +69,7 @@ export default class CrawlerService {
       ctx.body = new HandleRes({msg:'start OK'})
     })
 
-    // 返回爬虫目前状态
+    // 返回爬虫目前运行状态
     router.get('/status', async (ctx, next) => {
       ctx.body = await RuntimeInfoService.getOSInfo()
     })

@@ -25,6 +25,7 @@ export default class NewsListSpider extends HTMLSpider {
         score: $(this).next().find(".score").text().split(" ")[0]
       });
     })
+    console.log(stories)
     return stories
   }
 

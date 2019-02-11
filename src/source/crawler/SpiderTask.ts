@@ -3,22 +3,24 @@ import Request from '../spider/Request'
 import {Transformer} from './Crawler'
 
 export default class SpiderTask {
-  /** 构造函数需要输入的属性 */
+
+  /** 当前蜘蛛实例 */
   spiderInstance: Spider
 
   request: Request
 
   transformer: Transformer
 
+  /** 下一个蜘蛛实例 */
   nextSpiderInstance: Spider
 
   /** 内部运行时属性 */
   error: Error
 
-  // 本任务的执行开始时间
+  /** 本任务的执行开始时间 */
   startTime: Date
 
-  // 本任务的执行时间
+  /** 本任务的执行消耗时间 */
   elapsedTime: number
 
     /**
@@ -60,10 +62,10 @@ export default class SpiderTask {
     }
 
   /**
-   * desc 执行该任务
+   * @desc 执行该任务
    * @return {Promise.<void>}
    */
-  async run(isPersist: boolean=true): Promise<Array<Request>> {
+  async run(isPersist: boolean=false): Promise<Array<Request>> {
     const { url, option, extra } = this.request
 
     // 设置爬虫的请求
@@ -96,15 +98,8 @@ export default class SpiderTask {
       // 根据转换器获取新的请求
       let newRequests = this.transformer(data)
 
-      return newRequests.map((rawRequest: Request | any) => {
-        // 判断 request 是字符串还是 URL
-        if (typeof rawRequest === 'string') {
-          return {
-            url: rawRequest
-          }
-        } else {
-          return rawRequest
-        }
+      return newRequests.map((rawRequest: Request) => {
+        return rawRequest
       })
     } else {
       return []

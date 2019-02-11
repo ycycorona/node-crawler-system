@@ -133,7 +133,7 @@ export default class Spider implements SpiderInterface {
   }
 
 
-  async run(isPersist: boolean = true): Promise<any> {
+  async run(isPersist: boolean = false): Promise<any> {
     let rawData: any
 
     this.status = 'FETCH'

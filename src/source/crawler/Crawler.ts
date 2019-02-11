@@ -2,7 +2,31 @@ import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
 
+/**
+ * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
+ *
+ */
 export type Transformer = (dataFromPreviousSpider: any) => Array<Request>
+
+/**
+ * @desc 装饰器：手动指明初始化状态，无论spiders、transforms、requests都存在变量
+ * @param target
+ * @param propertyKey
+ * @param descriptor
+ */
+export function initialized(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  let func = descriptor.value // 先获取之前的函数
+  // 修改对应的value
+  descriptor.value = function (...args: any) {
+    try {
+      const resValue = func.apply(this, args)
+      this._isManualInit = true
+      return resValue
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
 
 export default class Crawler {
 
@@ -22,14 +46,17 @@ export default class Crawler {
   // 初始请求列表
   requests: Array<Request> = []
 
+  // 标识初始化状态
+  private _isManualInit: boolean = false
    /** 爬虫运行标志位 */
 
   // 记录当前爬虫是否被初始化
   get _isInitialized(): boolean {
+    // 爬虫列表、转换函数以及请求列表皆有值，或者_isManualInit为true
     return (
-      !!this.spiders.length &&
-      !!this.transforms.length &&
-      !!this.requests.length
+      (!!this.spiders.length &&
+      (!!this.transforms.length || this.spiders.length === 1) &&
+      !!this.requests.length) || (this._isManualInit)
     )
   }
 
@@ -72,6 +99,7 @@ export default class Crawler {
   /**
  * Description 由子类负责实现，进行内部请求初始化
  */
+  @initialized
   initialize() {}
 
   /**
@@ -113,17 +141,28 @@ export default class Crawler {
   }
 
   /**
-   * @function 重置当前爬虫状态
+   * @desc 重置当前爬虫状态
    */
   reset(): void {
+    this.cleanCrawler()
     this.initialize()
+  }
+
+  /**
+   * @desc 清除爬虫中的信息
+   */
+  cleanCrawler() {
+    this.spiders = []
+    this.transforms = []
+    this.requests = []
     this.isRunning = false
+    this._isManualInit = false
   }
 
   /**
    * @desc 执行单个爬虫
    */
-  async run(isPersist: boolean=true): Promise<boolean> {
+  async run(isPersist: boolean=false): Promise<boolean> {
     // 重置最后启动时间
     this.lastStartTime = new Date()
 
@@ -138,7 +177,7 @@ export default class Crawler {
       throw new Error('请至少设置一个爬虫实例与一个请求！')
     }
 
-    // 初始化将请求映射为爬虫的任务
+    // 初始化将请求映射为爬虫的任务 - 此动作应可以重复执行
     this.waitingSpiderTasks = SpiderTask.map(
       this.requests,
       this.spiders,
