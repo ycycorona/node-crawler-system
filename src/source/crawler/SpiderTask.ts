@@ -47,7 +47,7 @@ export default class SpiderTask {
    * @param spiders
    * @param transforms
    */
-  static map(
+  static initMap(
     requests: Array<Request>,
     spiders: Array<Spider>,
     transforms: Array<Transformer>): Array<SpiderTask> {

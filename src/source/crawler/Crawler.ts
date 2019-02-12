@@ -2,6 +2,7 @@ import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
 
+
 /**
  * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
  *
@@ -178,7 +179,7 @@ export default class Crawler {
     }
 
     // 初始化将请求映射为爬虫的任务 - 此动作应可以重复执行
-    this.waitingSpiderTasks = SpiderTask.map(
+    this.waitingSpiderTasks = SpiderTask.initMap(
       this.requests,
       this.spiders,
       this.transforms

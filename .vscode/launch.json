@@ -39,7 +39,7 @@
       "type": "node",
       "request": "launch",
       "name": "test",
-      "program": "${workspaceFolder}\\src\\common\\HandleRes.ts",
+      "program": "${workspaceFolder}\\src\\utils\\task_queue\\index.ts",
       "outFiles": [
         "${workspaceFolder}/**/*.js"
       ],
