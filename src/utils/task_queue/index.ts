@@ -1,6 +1,8 @@
+'use strict'
 import {queue, AsyncQueue} from 'async'
+import * as EventEmitter from 'events'
 
-export interface TaskInterface {
+export interface TaskInterface{
   /** 任务处理函数 */
   taskDo: () => Promise<any>
   /** 任务结束或者出错时的处理函数 */
@@ -12,21 +14,20 @@ export interface TaskInterface {
   // status: 'pre' | 'ing' | 'ed'
 }
 
-export default class TaskQueue {
-  failTaskList: TaskInterface[]
-  successTaskList: TaskInterface[]
-  taskNumber: number
+export default class TaskQueue extends EventEmitter  {
+  failTaskList: TaskInterface[] = []
+  successTaskList: TaskInterface[] = []
+  taskNumber: number = 0
   queueInstance: AsyncQueue<TaskInterface>
 
   /** 队列完成时的处理函数 */
-  queueDrain() {
-    console.log('drain')
+  queueDrain(thisTaskQueue: TaskQueue) {
+    thisTaskQueue.emit('drain')
   }
 
   /** 通用的 每个任务的 错误 处理函数 */
-  queueError(error: Error, task: TaskInterface) {
-    console.log(error)
-    this.failTaskList.push(task)
+  queueError(thisTaskQueue: TaskQueue, error: Error, task: TaskInterface) {
+    thisTaskQueue.failTaskList.push(task)
   }
 
   setQueueDrain(queueDrain: TaskQueue['queueDrain']): this {
@@ -54,39 +55,38 @@ export default class TaskQueue {
    * @param {numbrt} concurrency - 并发任务数
    */
   constructor(concurrency?: number) {
+    super()
     this.queueInstance = queue(async (task: TaskInterface) => {
       await task.taskDo()
       return true
     }, concurrency || 1)
 
-    this.queueInstance.drain = async () => {
-      console.log('队列完成')
-    }
+    this.queueInstance.drain = this.queueDrain.bind(this, this)
 
-    this.queueInstance.empty = () => {
-      console.log('empty')
-    }
-
-    this.queueInstance.error = this.queueError
+    this.queueInstance.error = this.queueError.bind(this, this)
   }
 }
 
 const task: TaskInterface = {
   taskDo: async function() {
-    console.log('任务执行')
+    console.log('我是一个任务')
+    throw 123
     return 123
   },
   resFlag: false,
   taskEndHandle: () => {
-    console.log('taskEnd')
+    console.log('一个任务执行完成', this)
   }
 }
+const person = {
+  name: 'ycy'
+}
 
-const o = new TaskQueue()
+
+/* const o = new TaskQueue()
 o.push(task)
 o.push(task)
 
-setTimeout(function() {
-  console.log(o)
-}, 2000)
-// o.queueError = 123
+o.on('drain', () => {
+  console.log('drain')
+}) */

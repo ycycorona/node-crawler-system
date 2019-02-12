@@ -1,7 +1,7 @@
 import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
-
+import TaskQueue from 'utils/task_queue'
 
 /**
  * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
@@ -90,6 +90,9 @@ export default class Crawler {
 
   // 存放内部待执行的蜘蛛任务
   waitingSpiderTasks: SpiderTask[] = []
+
+  // 任务队列中的蜘蛛任务
+  taskQueue: TaskQueue
 
   // 存放内部已经完成的蜘蛛任务
   successfulSpiderTasks: SpiderTask[] = []
@@ -224,6 +227,10 @@ export default class Crawler {
         )
       }
     }
+
+    await new Promise((resolve, reject) => {
+      resolve()
+    })
 
     this.isRunning = false
 
