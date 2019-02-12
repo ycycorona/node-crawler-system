@@ -5,9 +5,9 @@ import * as EventEmitter from 'events'
 export interface TaskInterface{
   /** 任务处理函数 */
   taskDo: () => Promise<any>
+  resFlag?: boolean
   /** 任务结束或者出错时的处理函数 */
   taskEndHandle?: (err: Error, res: any) => any
-  resFlag: boolean
   inData?: {[key: string]: any}
   outData?: {[key: string]: any}
   toString?: () => string
@@ -23,6 +23,10 @@ export default class TaskQueue extends EventEmitter  {
   /** 队列完成时的处理函数 */
   queueDrain(thisTaskQueue: TaskQueue) {
     thisTaskQueue.emit('drain')
+  }
+
+  taskEndHandle(thisTaskQueue: TaskQueue, err: Error, res: {taskRes: any; task: TaskInterface}) {
+    thisTaskQueue.emit('oneTaskEnd', err, res)
   }
 
   /** 通用的 每个任务的 错误 处理函数 */
@@ -45,7 +49,7 @@ export default class TaskQueue extends EventEmitter  {
     if (task.taskEndHandle) {
       this.queueInstance.push(task, task.taskEndHandle)
     } else {
-      this.queueInstance.push(task)
+      this.queueInstance.push(task, this.taskEndHandle.bind(this, this))
     }
     return true
   }
@@ -57,8 +61,11 @@ export default class TaskQueue extends EventEmitter  {
   constructor(concurrency?: number) {
     super()
     this.queueInstance = queue(async (task: TaskInterface) => {
-      await task.taskDo()
-      return true
+      const res = await task.taskDo()
+      return {
+        taskRes: res,
+        task: task
+      }
     }, concurrency || 1)
 
     this.queueInstance.drain = this.queueDrain.bind(this, this)
@@ -70,23 +77,23 @@ export default class TaskQueue extends EventEmitter  {
 const task: TaskInterface = {
   taskDo: async function() {
     console.log('我是一个任务')
-    throw 123
     return 123
   },
-  resFlag: false,
-  taskEndHandle: () => {
-    console.log('一个任务执行完成', this)
-  }
+  resFlag: false
 }
 const person = {
   name: 'ycy'
 }
 
 
-/* const o = new TaskQueue()
+const o = new TaskQueue()
 o.push(task)
 o.push(task)
 
 o.on('drain', () => {
   console.log('drain')
-}) */
+})
+
+o.on('oneTaskEnd', () => {
+  console.log('oneTaskEnd')
+})

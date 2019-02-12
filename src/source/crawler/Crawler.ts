@@ -188,12 +188,17 @@ export default class Crawler {
       this.transforms
     )
 
+    const taskQueue = new TaskQueue()
     this.isRunning = true
 
     // 循环直到所有的待执行任务全部执行完毕
     while (this.waitingSpiderTasks.length > 0) {
       // 取出某个任务实例
       let spiderTask: SpiderTask = this.waitingSpiderTasks.shift();
+      taskQueue.push({
+        taskDo: spiderTask.run.bind(this, isPersist),
+        inData:{spiderTask: spiderTask}
+      })
 
       let derivedRequests: Array<Request>
 
@@ -204,7 +209,7 @@ export default class Crawler {
         // 添加到失败的错误列表中
         this.failedSpiderTasks.push(spiderTask)
 
-        // 设置最后的完成时间
+        // 设置最后的错误时间
         this.lastErrorTime = new Date()
 
         // 发生异常时则跳过剩余的执行
@@ -227,6 +232,19 @@ export default class Crawler {
         )
       }
     }
+
+    taskQueue.on('oneTaskEnd', (err, res) => {
+      const {spiderTask} = res.task.inData
+      if (err) {
+        // 添加到失败的蜘蛛任务加到错误列表中
+        this.failedSpiderTasks.push(spiderTask)
+        // 设置最后的错误时间
+        this.lastErrorTime = new Date()
+      } else {
+        const derivedRequests = res.task.res
+        this.successfulSpiderTasks.push(spiderTask)
+      }
+    })
 
     await new Promise((resolve, reject) => {
       resolve()
