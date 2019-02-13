@@ -7,7 +7,7 @@ export interface TaskInterface{
   taskDo: () => Promise<any>
   resFlag?: boolean
   /** 任务结束或者出错时的处理函数 */
-  taskEndHandle?: (err: Error, res: any) => any
+  taskEndHandler?: (err: Error, res: any) => any
   inData?: {[key: string]: any}
   outData?: {[key: string]: any}
   toString?: () => string
@@ -21,44 +21,52 @@ export default class TaskQueue extends EventEmitter  {
   queueInstance: AsyncQueue<TaskInterface>
 
   /** 队列完成时的处理函数 */
-  queueDrain(thisTaskQueue: TaskQueue) {
+  queueDrainHandler(thisTaskQueue: TaskQueue) {
     thisTaskQueue.emit('drain')
   }
 
-  taskEndHandle(thisTaskQueue: TaskQueue, err: Error, res: {taskRes: any; task: TaskInterface}) {
+  taskEndHandler(thisTaskQueue: TaskQueue, err: Error, res: {taskRes: any; task: TaskInterface}) {
+    if (!err) {
+      thisTaskQueue.successTaskList.push(res.task)
+    }
     thisTaskQueue.emit('oneTaskEnd', err, res)
   }
 
   /** 通用的 每个任务的 错误 处理函数 */
-  queueError(thisTaskQueue: TaskQueue, error: Error, task: TaskInterface) {
+  taskErrorhandler(thisTaskQueue: TaskQueue, err: Error, task: TaskInterface) {
     thisTaskQueue.failTaskList.push(task)
+    thisTaskQueue.emit('oneTaskError', err, task)
   }
 
-  setQueueDrain(queueDrain: TaskQueue['queueDrain']): this {
-    queueDrain && (this.queueDrain = queueDrain)
+  setQueueDrainHandler(queueDrainHandler: TaskQueue['queueDrainHandler']): this {
+    queueDrainHandler && (this.queueDrainHandler = queueDrainHandler)
     return this
   }
 
-  setQueueError(queueError: TaskQueue['queueError']): this {
-    queueError && (this.queueError = queueError)
+  setTaskErrorhandler(queueError: TaskQueue['taskErrorhandler']): this {
+    queueError && (this.taskErrorhandler = queueError)
     return this
   }
 
   /** 任务加入任务队列中 */
   push(task: TaskInterface): boolean {
-    if (task.taskEndHandle) {
-      this.queueInstance.push(task, task.taskEndHandle)
+    if (task.taskEndHandler) {
+      this.queueInstance.push(task, task.taskEndHandler)
     } else {
-      this.queueInstance.push(task, this.taskEndHandle.bind(this, this))
+      this.queueInstance.push(task, this.taskEndHandler.bind(this, this))
     }
     return true
+  }
+
+  idle() {
+    return this.queueInstance.idle()
   }
 
   /**
    * @desc 构造函数
    * @param {numbrt} concurrency - 并发任务数
    */
-  constructor(concurrency?: number) {
+  constructor(concurrency?: number, readonly displayName: string = 'taskQueue') {
     super()
     this.queueInstance = queue(async (task: TaskInterface) => {
       const res = await task.taskDo()
@@ -68,13 +76,13 @@ export default class TaskQueue extends EventEmitter  {
       }
     }, concurrency || 1)
 
-    this.queueInstance.drain = this.queueDrain.bind(this, this)
+    this.queueInstance.drain = this.queueDrainHandler.bind(this, this)
 
-    this.queueInstance.error = this.queueError.bind(this, this)
+    this.queueInstance.error = this.taskErrorhandler.bind(this, this)
   }
 }
 
-const task: TaskInterface = {
+/* const task: TaskInterface = {
   taskDo: async function() {
     console.log('我是一个任务')
     return 123
@@ -96,4 +104,4 @@ o.on('drain', () => {
 
 o.on('oneTaskEnd', () => {
   console.log('oneTaskEnd')
-})
+}) */

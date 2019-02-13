@@ -1,7 +1,7 @@
 import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
-import TaskQueue from 'utils/task_queue'
+import {default as TaskQueue, TaskInterface} from 'utils/task_queue'
 
 /**
  * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
@@ -47,6 +47,8 @@ export default class Crawler {
   // 初始请求列表
   requests: Array<Request> = []
 
+  isPersist: boolean = true
+
   // 标识初始化状态
   private _isManualInit: boolean = false
    /** 爬虫运行标志位 */
@@ -91,8 +93,8 @@ export default class Crawler {
   // 存放内部待执行的蜘蛛任务
   waitingSpiderTasks: SpiderTask[] = []
 
-  // 任务队列中的蜘蛛任务
-  taskQueue: TaskQueue
+  // 蜘蛛任务队列 列表
+  taskQueueList: TaskQueue[] = []
 
   // 存放内部已经完成的蜘蛛任务
   successfulSpiderTasks: SpiderTask[] = []
@@ -102,12 +104,13 @@ export default class Crawler {
 
   /**
  * Description 由子类负责实现，进行内部请求初始化
+ * @decoration  @initialized
  */
-  @initialized
+  // @initialized
   initialize() {}
 
   /**
- * @desc 待复写函数，设置当前的待处理的 URL 或者 Generator
+ * @desc 待复写函数，设置爬虫的种子 URL 或者 Generator
  * @return {this <T extends Crawler>}
  */
   setRequests(requests: Request[]) : this {
@@ -125,21 +128,23 @@ export default class Crawler {
   }
 
   /**
- * @desc 添加蜘蛛到当前爬虫流中
+ * @desc 添加蜘蛛到当前爬虫流中 同时根据蜘蛛数量初始化对应的蜘蛛队列
  * @param {Spider} spider
  * @returns {this <T extends Crawler>}
  */
-  setSpider(spider: Spider): this {
+  setSpider(spider: Spider, taskQueueConcurrency?: number): this {
     this.spiders.push(spider)
+    // 每 一个蜘蛛 对应 一个任务队列
+    this.taskQueueList.push(new TaskQueue(taskQueueConcurrency))
     return this
   }
 
   /**
  * @desc 添加转换函数
  * @param transformer
- * @returns {Crawler}
+ * @returns {this <T extends Crawler>}
  */
-  transform(transformer: Transformer): Crawler {
+  setTransform(transformer: Transformer): this {
     this.transforms.push(transformer)
     return this
   }
@@ -164,9 +169,39 @@ export default class Crawler {
   }
 
   /**
+   * @desc 把待执行列表中的蜘蛛任务加入到对应的蜘蛛任务队列中
+   */
+  scanWaitingListToTaskQueue() {
+    while (this.waitingSpiderTasks.length > 0) {
+      // 从待执行列表中取出某个爬虫任务实例，
+      let spiderTask: SpiderTask = this.waitingSpiderTasks.shift()
+      // 找到任务队列列表和蜘蛛列表的对应项
+      const index = this.spiders.indexOf(spiderTask.spiderInstance)
+      this.taskQueueList[index].push({
+        taskDo: spiderTask.run.bind(spiderTask),
+        inData:{spiderTask: spiderTask}
+      })
+    }
+  }
+
+  /**
+   * @desc 判断是否所有队列为空闲
+   */
+  isAllTaskQueueIdle() {
+    let isIdle = true
+    for (const taskQueue of this.taskQueueList) {
+      if(taskQueue.idle() === false) {
+        isIdle = false
+        break
+      }
+    }
+    return isIdle
+  }
+
+  /**
    * @desc 执行单个爬虫
    */
-  async run(isPersist: boolean=false): Promise<boolean> {
+  async run(): Promise<boolean> {
     // 重置最后启动时间
     this.lastStartTime = new Date()
 
@@ -188,67 +223,33 @@ export default class Crawler {
       this.transforms
     )
 
-    const taskQueue = new TaskQueue()
     this.isRunning = true
 
-    // 循环直到所有的待执行任务全部执行完毕
-    while (this.waitingSpiderTasks.length > 0) {
-      // 取出某个任务实例
-      let spiderTask: SpiderTask = this.waitingSpiderTasks.shift();
-      taskQueue.push({
-        taskDo: spiderTask.run.bind(this, isPersist),
-        inData:{spiderTask: spiderTask}
-      })
+    // 把任务从待执行列表推入执行队列
+    this.scanWaitingListToTaskQueue()
 
-      let derivedRequests: Array<Request>
+    const queueDrainPromises: Promise<any>[] = []
 
-      try {
-        derivedRequests = await spiderTask.run(isPersist);
-        this.successfulSpiderTasks.push(spiderTask)
-      } catch (e) {
-        // 添加到失败的错误列表中
-        this.failedSpiderTasks.push(spiderTask)
-
-        // 设置最后的错误时间
-        this.lastErrorTime = new Date()
-
-        // 发生异常时则跳过剩余的执行
-        continue
-      }
-
-      // 获取下一个爬虫实例的下标
-      let index = this.spiders.indexOf(spiderTask.nextSpiderInstance)
-
-      // 根据获取到的新请求来创建新的爬虫任务
-      for (const request of derivedRequests) {
-        // 添加新的蜘蛛运行任务
-        this.waitingSpiderTasks.push(
-          new SpiderTask(
-            spiderTask.nextSpiderInstance,
-            request,
-            this.transforms.length > index ? this.transforms[index] : null,
-            this.spiders.length > index + 1 ? this.spiders[index + 1] : null
-          )
-        )
-      }
+    for (const taskQueue of this.taskQueueList) {
+      // 每一个任务执行完毕之后
+      taskQueue.on('oneTaskEnd', spiderTaskEndHandler.bind(this))
+      taskQueue.on('oneTaskError', spiderTaskErrorHandler.bind(this))
+      queueDrainPromises.push(
+        new Promise((resolve, reject) => {
+          taskQueue.on('drain', () => {
+            if (this.waitingSpiderTasks.length > 0) {
+              this.scanWaitingListToTaskQueue()
+            } else {
+              if (this.isAllTaskQueueIdle()) {
+                resolve()
+              }
+            }
+          })
+        })
+      )
     }
 
-    taskQueue.on('oneTaskEnd', (err, res) => {
-      const {spiderTask} = res.task.inData
-      if (err) {
-        // 添加到失败的蜘蛛任务加到错误列表中
-        this.failedSpiderTasks.push(spiderTask)
-        // 设置最后的错误时间
-        this.lastErrorTime = new Date()
-      } else {
-        const derivedRequests = res.task.res
-        this.successfulSpiderTasks.push(spiderTask)
-      }
-    })
-
-    await new Promise((resolve, reject) => {
-      resolve()
-    })
+    await Promise.all(queueDrainPromises)
 
     this.isRunning = false
 
@@ -257,4 +258,48 @@ export default class Crawler {
 
     return true
   }
+}
+
+/**
+ * @desc 每个蜘蛛任务执行完成后的回调函数
+ * @param err
+ * @param res
+ */
+function spiderTaskEndHandler(err: Error, res: {taskRes: any; task: TaskInterface}) {
+  if (err) {
+
+  } else {
+    const {spiderTask} = res.task.inData
+    this.successfulSpiderTasks.push(spiderTask)
+    const derivedRequests = res.taskRes
+    // 获取下一个蜘蛛实例的下标
+    let index = this.spiders.indexOf(spiderTask.nextSpiderInstance)
+
+    // 根据获取到的新请求来创建新的蜘蛛任务
+    for (const request of derivedRequests) {
+      // 添加新的蜘蛛运行任务
+      this.waitingSpiderTasks.push(
+        new SpiderTask(
+          spiderTask.nextSpiderInstance,
+          request,
+          this.transforms.length > index ? this.transforms[index] : null,
+          this.spiders.length > index + 1 ? this.spiders[index + 1] : null
+        )
+      )
+    }
+
+    this.scanWaitingListToTaskQueue()
+  }
+}
+
+/**
+ * @desc 每个蜘蛛任务的错误处理函数
+ * @param err
+ * @param task
+ */
+function spiderTaskErrorHandler(err: Error, task: TaskInterface) {
+  // 添加到失败的蜘蛛任务加到错误列表中
+  this.failedSpiderTasks.push(task.inData.spiderTask)
+  // 设置最后的错误时间
+  this.lastErrorTime = new Date()
 }

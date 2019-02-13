@@ -7,7 +7,7 @@ type Res = {
 }
 const DefaultRes: Res = {
   status: 1,
-  msg:'success',
+  msg: '',
   data: null,
   error: null,
   errNo: null }
@@ -18,7 +18,6 @@ export default class HandleRes {
   data: any
   error: Error
   errNo: string
-
   constructor()
   constructor(o: { status: 0})
   constructor(o: { status?: 1 | 0; msg?: string; data?: any; error?: Error; errNo?: string })

@@ -19,7 +19,7 @@ export default class JSONSpider extends Spider {
       method: 'GET'
     }
     return new Promise(async (resolve, reject) => {
-      let data: any = await axios(Object.assign(defaultAxiosOpts,axiosOpts))
+      let data: any = await axios(Object.assign(defaultAxiosOpts, axiosOpts))
         .catch(error => {
           reject(error) // 抓取数据失败，此时直接停止spider运行，并抛出错误
         })
@@ -40,5 +40,7 @@ export default class JSONSpider extends Spider {
     return {data: JSONObj}
   }
 
-  parse: (extractedData: {[propName: string]: any} | any[]) => Promise<any>
+  async parse(extractedData: {[propName: string]: any} | any[]): Promise<any> {
+    return extractedData
+  }
 }

@@ -18,6 +18,8 @@ export default class Spider implements SpiderInterface {
   readonly uuid: string = nanoid()
   // 当前类名
   readonly name: string = this.constructor.name
+  // 显示名
+  readonly displayName: string = this.constructor.name
   // 模型属性
   extractMap: mapType
   // 蜘蛛依赖图谱
@@ -48,7 +50,8 @@ export default class Spider implements SpiderInterface {
    * @param displayName
    * @param extra
    */
-  constructor(readonly displayName: string = 'spider', extra?: any) {
+  constructor(displayName?: string, extra?: any) {
+    displayName && (this.displayName = displayName)
     extra && (this.extra = extra)
   }
 

@@ -82,7 +82,7 @@ export default class CrawlerScheduler {
             // 出现异常之后，重置当前爬虫
             crawler.reset()
             //todo 正常的执行流程下不应该在此处报错
-            console.error(err)
+            throw err
           })
       }
     }

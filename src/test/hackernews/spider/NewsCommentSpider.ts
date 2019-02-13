@@ -28,6 +28,10 @@ export default class NewsListSpider extends HTMLSpider {
         indent: level
       })
     })
+    console.log({
+      commentsList,
+      storyId: this.extra.storyId
+    })
     return {
       commentsList,
       storyId: this.extra.storyId

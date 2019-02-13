@@ -11,12 +11,17 @@ export default class Request {
     [x: string]: any
   }
 
-  // 其他全局信息
+  // 其他额外信息
   extra?: any
 
   /** Web 专用属性 */
   url?: string
 
+  constructor(url: string, option?: object, extra?: any) {
+    url && (this.url = url)
+    option && (this.option = option)
+    extra && (this.extra = extra)
+  }
   /**
  * Description 判断输入的 Request 对象是否有效
  * @param request

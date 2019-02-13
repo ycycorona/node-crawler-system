@@ -15,6 +15,24 @@
       "env": {
         "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
       },
+      "runtimeExecutable": "nodemon",
+      "restart": true,
+      //"console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ctripFLightInfosCrawlerServer",
+      "program": "${workspaceFolder}\\src\\test\\ctripFlightsInfo\\run_crawler_server.ts",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+      "env": {
+        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+      },
+      "runtimeExecutable": "nodemon",
+      "restart": true,
+      //"console": "integratedTerminal"
     },
 
     {
