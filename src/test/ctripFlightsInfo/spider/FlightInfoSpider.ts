@@ -6,7 +6,7 @@ export default class FlightInfoSpider extends JSONSpider {
    * @returns {Array}
    */
   async parse(extractedData: {[propName: string]: any}): Promise<any> {
-    debugger
+    console.log(extractedData.msg)
     return extractedData
   }
 

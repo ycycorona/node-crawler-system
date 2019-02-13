@@ -64,7 +64,5 @@ export default class FlightInfoCrawler extends Crawler {
     .setSpider(
       new FlightInfoSpider()
     )
-    const x = new FlightInfoSpider()
-    console.log(x)
   }
 }

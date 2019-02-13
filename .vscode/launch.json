@@ -15,8 +15,8 @@
       "env": {
         "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
       },
-      "runtimeExecutable": "nodemon",
-      "restart": true,
+      "runtimeExecutable": "node",
+      //"restart": true,
       //"console": "integratedTerminal"
     },
     {
