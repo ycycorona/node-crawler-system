@@ -102,7 +102,7 @@ export default class CrawlerService {
       console.log(
         `
           爬虫服务端开始运行：
-          ${baseUrl}/ - 服务端根入口
+          ${baseUrl}/ - 服务端根入口,欢迎信息阿斯蒂
           ${baseUrl}/crawlers - 查看爬虫列表
           ${baseUrl}/crawler/:crawlerName - 查看某个爬虫详情
           ${baseUrl}/start/all - 启动所有爬虫

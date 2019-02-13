@@ -5,6 +5,23 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Current TS File",
+      "type": "node",
+      "request": "launch",
+      "args": [
+        "${relativeFile}"
+      ],
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "sourceMaps": true,
+      // "console": "integratedTerminal",
+      // "internalConsoleOptions": "neverOpen"
+    },
+    {
       "type": "node",
       "request": "launch",
       "name": "run_crawler_server",
@@ -23,15 +40,21 @@
       "type": "node",
       "request": "launch",
       "name": "ctripFLightInfosCrawlerServer",
-      "program": "${workspaceFolder}\\src\\test\\ctripFlightsInfo\\run_crawler_server.ts",
-      "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ],
+      "args": ["${workspaceFolder}\\src\\test\\ctripFlightsInfo\\run_crawler_server.ts"],
+      // "outFiles": [
+      //   "${workspaceFolder}/**/*.js"
+      // ],
       "env": {
-        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+        "NODE_PATH": "${workspaceFolder}\\dist",
+        "NODE_ENV": "development"
       },
-      "runtimeExecutable": "nodemon",
-      "restart": true,
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "protocol": "inspector",
       //"console": "integratedTerminal"
     },
 
@@ -49,7 +72,7 @@
         "${workspaceFolder}/dist/test/hackernews/__test__/NewsCommentSpider.test.js"
       ],
       "env": {
-        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+        "NODE_PATH": "${workspaceFolder}\\dist"
       },
       "internalConsoleOptions": "openOnSessionStart"
     },
