@@ -8,15 +8,21 @@
       "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "args": [
-        "${relativeFile}"
+      "program": "${workspaceFolder}\\${relativeFile}",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
       ],
+      "env": {
+        "DEBUG": "*",
+        "NODE_PATH": "${workspaceFolder}\\dist",
+        "NODE_ENV": "development"
+      },
       "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--nolazy",
-        "-r",
-        "ts-node/register"
-      ],
+      // "runtimeArgs": [
+      //   "--nolazy",
+      //   "-r",
+      //   "ts-node/register"
+      // ],
       "sourceMaps": true,
       // "console": "integratedTerminal",
       // "internalConsoleOptions": "neverOpen"
@@ -30,7 +36,7 @@
         "${workspaceFolder}/**/*.js"
       ],
       "env": {
-        "NODE_PATH": "D:\\code\\personal\\node-crawler-system\\dist"
+        "NODE_PATH": "${workspaceFolder}\\dist"
       },
       "runtimeExecutable": "node",
       //"restart": true,
@@ -40,22 +46,24 @@
       "type": "node",
       "request": "launch",
       "name": "ctripFLightInfosCrawlerServer",
-      "args": ["${workspaceFolder}\\src\\test\\ctripFlightsInfo\\run_crawler_server.ts"],
-      // "outFiles": [
-      //   "${workspaceFolder}/**/*.js"
-      // ],
+      "program": "${workspaceFolder}\\src\\test\\ctripFlightsInfo\\run_crawler_server.ts",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
       "env": {
+        "DEBUG": "Crawler",
         "NODE_PATH": "${workspaceFolder}\\dist",
         "NODE_ENV": "development"
       },
       "runtimeExecutable": "node",
       "runtimeArgs": [
         "--nolazy",
-        "-r",
-        "ts-node/register"
+        //"-r",
+        //"ts-node/register"
       ],
-      "protocol": "inspector",
-      //"console": "integratedTerminal"
+      //"protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     },
 
     {

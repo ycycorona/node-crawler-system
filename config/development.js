@@ -28,7 +28,7 @@ module.exports = {
     params: {
       directAjaxURL: 'https://flights.ctrip.com/itinerary/api/12808/products',
       dateStart: '2019-01-11',
-      duration: 10,
+      duration: 3,
       dateEnd: '2019-01-11',
       flightLines: [
         ['hrb', 'tao'],

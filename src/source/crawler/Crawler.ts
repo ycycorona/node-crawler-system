@@ -2,6 +2,9 @@ import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
 import {default as TaskQueue, TaskInterface} from 'utils/task_queue'
+import Debug from 'debug'
+
+const debug = Debug('Crawler')
 
 /**
  * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
@@ -22,6 +25,7 @@ export function initialized(target: any, propertyKey: string, descriptor: Proper
     try {
       const resValue = func.apply(this, args)
       this._isManualInit = true
+      debug('crawler initialized')
       return resValue
     } catch (e) {
       console.log(e)
@@ -202,6 +206,8 @@ export default class Crawler {
    * @desc 执行单个爬虫
    */
   async run(): Promise<boolean> {
+    debug('crawler run start')
+
     // 重置最后启动时间
     this.lastStartTime = new Date()
 
@@ -255,7 +261,7 @@ export default class Crawler {
 
     // 全部执行完毕，重置最后的结束时间
     this.lastFinishTime = new Date()
-
+    debug('crawler run finish')
     return true
   }
 }
