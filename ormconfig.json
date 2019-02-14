@@ -2,11 +2,12 @@
    "type": "mysql",
    "host": "47.105.46.120",
    "port": 60001,
-   "username": "ctripFlightInfo",
+   "username": "root",
    "password": "ycy6323892",
-   "database": "ctripFlightInfo",
-   "synchronize": false,
+   "database": "media_db",
+   "synchronize": true,
    "logging": false,
+   "logger": "file",
    "entities": [
       "dist/orm/entity/**/*.js"
    ],

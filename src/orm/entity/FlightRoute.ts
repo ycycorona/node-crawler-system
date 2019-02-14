@@ -1,10 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
+import { Base } from './fragment/base'
 
 @Entity()
-export class FlightRoute {
+export class FlightRoute extends Base {
 
-
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn()
     id: string
 
     @Column()
