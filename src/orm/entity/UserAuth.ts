@@ -1,19 +1,16 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
+import {Entity, Index, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm"
 import { Base } from './fragment/base'
 import { User } from "./User"
 
 @Entity('user_auths')
+@Index(["userId", "auth_type"], { unique: true })
 export class UserAuth extends Base {
 
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({
-      type: 'int',
-      width: 11,
-      comment: '用户id'
-    })
-    id_user: number
+    @Column({ nullable: true })
+    userId: number;
 
     @Column({
       type: 'varchar',
@@ -36,6 +33,6 @@ export class UserAuth extends Base {
     })
     token: string
 
-    @ManyToOne(type => User, user => user.userAuth)
+    @ManyToOne(type => User, user => user.userAuths)
     user: User
 }

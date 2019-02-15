@@ -33,5 +33,5 @@ export class User extends Base {
     nickName: string
 
     @OneToMany(type => UserAuth, userAuth => userAuth.user)
-    userAuth: UserAuth
+    userAuths: UserAuth[]
 }
