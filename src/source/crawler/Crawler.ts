@@ -2,9 +2,8 @@ import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import SpiderTask from './SpiderTask'
 import {default as TaskQueue, TaskInterface} from 'utils/task_queue'
-import Debug from 'debug'
-
-const debug = Debug('Crawler')
+import Logger from 'utils/logger'
+const logger = Logger(__filename)
 
 /**
  * @desc 把上一个蜘蛛的结果转换成下一个蜘蛛的request对象
@@ -25,7 +24,7 @@ export function initialized(target: any, propertyKey: string, descriptor: Proper
     try {
       const resValue = func.apply(this, args)
       this._isManualInit = true
-      debug('crawler initialized')
+      logger.debug('crawler initialized')
       return resValue
     } catch (e) {
       console.log(e)
@@ -51,7 +50,12 @@ export default class Crawler {
   // 初始请求列表
   requests: Array<Request> = []
 
-  isPersist: boolean = true
+  isPersist?: boolean
+
+  setIsPersist(isPersist: boolean): this {
+    this.isPersist = isPersist
+    return this
+  }
 
   // 标识初始化状态
   private _isManualInit: boolean = false
@@ -182,7 +186,7 @@ export default class Crawler {
       // 找到任务队列列表和蜘蛛列表的对应项
       const index = this.spiders.indexOf(spiderTask.spiderInstance)
       this.taskQueueList[index].push({
-        taskDo: spiderTask.run.bind(spiderTask),
+        taskDo: spiderTask.run.bind(spiderTask, this.isPersist),
         inData:{spiderTask: spiderTask}
       })
     }
@@ -206,7 +210,7 @@ export default class Crawler {
    * @desc 执行单个爬虫
    */
   async run(): Promise<boolean> {
-    debug('crawler run start')
+    logger.debug('crawler run start')
 
     // 重置最后启动时间
     this.lastStartTime = new Date()
@@ -261,7 +265,7 @@ export default class Crawler {
 
     // 全部执行完毕，重置最后的结束时间
     this.lastFinishTime = new Date()
-    debug('crawler run finish')
+    logger.debug('crawler run finish')
     return true
   }
 }
@@ -308,4 +312,5 @@ function spiderTaskErrorHandler(err: Error, task: TaskInterface) {
   this.failedSpiderTasks.push(task.inData.spiderTask)
   // 设置最后的错误时间
   this.lastErrorTime = new Date()
+  logger.debug('spiderTaskErrorHandler', err)
 }

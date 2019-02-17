@@ -1,7 +1,6 @@
-import "reflect-metadata"
+// import "reflect-metadata"
 import { createConnection } from "typeorm"
 import { FlightInfo } from "./entity/FlightInfo"
-
 import { FlightRoute } from "./entity/FlightRoute"
 import { StopInfo } from "./entity/StopInfo"
 import { CabinInfo } from "./entity/CabinInfo"

@@ -27,6 +27,10 @@ export default class Spider implements SpiderInterface {
   // 传递额外内容
   extra: any
   // 允许动态设置的属性
+
+  // 是否进行持久化
+  isPersist: boolean = false
+  // 请求URL
   url: string
   // 网络请求的参数
   option: object
@@ -136,7 +140,7 @@ export default class Spider implements SpiderInterface {
   }
 
 
-  async run(isPersist: boolean = false): Promise<any> {
+  async run(isPersist?: boolean): Promise<any> {
     let rawData: any
 
     this.status = 'FETCH'
@@ -185,7 +189,7 @@ export default class Spider implements SpiderInterface {
       );
     } else {
       // 对元素进行解析
-      parsedData = await this.parse(extractedDataOrObject.data);
+      parsedData = await this.parse(extractedDataOrObject.data)
     }
 
     this.status = 'VALIDATE'
@@ -203,9 +207,9 @@ export default class Spider implements SpiderInterface {
 
     checkPoint = Date.now()
 
-    if (isPersist) {
+    if (isPersist === undefined ? this.isPersist : isPersist) {
       // 一组执行完毕后进行数据写入
-      await this.persist(parsedData);
+      await this.persist(parsedData)
     }
 
     this.status = 'IDLE';

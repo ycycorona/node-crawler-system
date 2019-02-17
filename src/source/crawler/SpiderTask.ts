@@ -1,6 +1,8 @@
 import Spider from '../spider/Spider'
 import Request from '../spider/Request'
 import {Transformer} from './Crawler'
+import Logger from 'utils/logger'
+const logger = Logger(__filename)
 
 export default class SpiderTask {
 
@@ -65,7 +67,7 @@ export default class SpiderTask {
    * @desc 执行该任务
    * @return {Promise.<void>}
    */
-  async run(isPersist: boolean=false): Promise<Array<Request>> {
+  async run(isPersist?: boolean): Promise<Array<Request>> {
     const { url, option, extra } = this.request
 
     // 设置爬虫的请求
@@ -88,8 +90,8 @@ export default class SpiderTask {
       // 记录本次执行时间
       this.elapsedTime = Date.now() - this.startTime.valueOf()
     } catch (e) {
-      this.error = e
       // 发生异常时，跳过剩余的执行
+      this.error = e
       throw e
     }
 

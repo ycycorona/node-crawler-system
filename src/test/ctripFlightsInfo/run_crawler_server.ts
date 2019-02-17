@@ -1,19 +1,33 @@
 import CrawlerScheduler from "source/crawler/CrawlerScheduler"
 import CrawlerServer from "server/CrawlerServer"
 import FlightInfoCrawler from "./crawler/FlightInfoCrawler"
-const crawlerScheduler: CrawlerScheduler = new CrawlerScheduler();
-// import Logger from 'utils/logger'
-// const logger = Logger(__filename)
-const debug = require('debug')('Crawler')
-// 注册
-crawlerScheduler.register(new FlightInfoCrawler())
+import { createConnection, getConnectionManager } from "typeorm"
+import Logger from 'utils/logger'
+const logger = Logger(__filename)
 
-new CrawlerServer(crawlerScheduler).run().then(
-  info => {
+;(async () => {
+  try {
+    await createConnection()
+    logger.debug('数据库连接已建立')
 
-    //console.log(info);
-  },
-  error => {
-    console.error(error);
+    const crawlerScheduler: CrawlerScheduler = new CrawlerScheduler()
+
+    const debug = require('debug')('Crawler')
+    // 注册
+    crawlerScheduler.register(new FlightInfoCrawler())
+
+    new CrawlerServer(crawlerScheduler).run().then(
+      info => {
+
+        //console.log(info);
+      },
+      error => {
+        console.error(error);
+      }
+    )
+  } catch(err) {
+    console.log(err)
   }
-);
+
+})()
+

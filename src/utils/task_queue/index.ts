@@ -25,6 +25,7 @@ export default class TaskQueue extends EventEmitter  {
     thisTaskQueue.emit('drain')
   }
 
+  /**每个任务结束时的处理函数 */
   taskEndHandler(thisTaskQueue: TaskQueue, err: Error, res: {taskRes: any; task: TaskInterface}) {
     if (!err) {
       thisTaskQueue.successTaskList.push(res.task)
@@ -38,6 +39,7 @@ export default class TaskQueue extends EventEmitter  {
     thisTaskQueue.emit('oneTaskError', err, task)
   }
 
+  /** 队列放空的处理函数 */
   setQueueDrainHandler(queueDrainHandler: TaskQueue['queueDrainHandler']): this {
     queueDrainHandler && (this.queueDrainHandler = queueDrainHandler)
     return this
@@ -63,7 +65,7 @@ export default class TaskQueue extends EventEmitter  {
   }
 
   /**
-   * @desc 构造函数
+   * @desc 构造函数 此处设置队列中每个任务的处理函数
    * @param {numbrt} concurrency - 并发任务数
    */
   constructor(concurrency?: number, readonly displayName: string = 'taskQueue') {

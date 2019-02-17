@@ -58,11 +58,11 @@ export default class FlightInfoCrawler extends Crawler {
         })
       }
     }
-
+    const spiderIns = new FlightInfoSpider()
     this
     .setRequests(requests)
     .setSpider(
-      new FlightInfoSpider()
+      spiderIns
     )
   }
 }
