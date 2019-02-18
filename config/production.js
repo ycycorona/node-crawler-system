@@ -1,4 +1,6 @@
 const loggerConfig = require('./log/log4js.config.prod')
+const ormrConfig = require('./log/orm.config.prod')
+
 module.exports = {
   chromeOptions: {
     ignoreHTTPSErrors: true,
@@ -81,5 +83,6 @@ module.exports = {
       ]
     }
   },
-  logger: loggerConfig
+  logger: loggerConfig,
+  orm: ormrConfig
 }

@@ -1,4 +1,5 @@
 const loggerConfig = require('./log/log4js.config.dev')
+const ormrConfig = require('./orm/orm.config.dev')
 module.exports = {
   axios: {
     useProxy: true,
@@ -28,12 +29,12 @@ module.exports = {
     params: {
       directAjaxURL: 'https://flights.ctrip.com/itinerary/api/12808/products',
       dateStart: '2019-01-11',
-      duration: 3,
+      duration: 10,
       dateEnd: '2019-01-11',
       flightLines: [
         ['hrb', 'tao'],
-/*        ['tao', 'hrb'],
-        ['zha', 'tao'],
+        ['tao', 'hrb'],
+        /*['zha', 'tao'],
         ['tao', 'zha'],
         ['kry', 'tao'],
         ['tao', 'kry'],
@@ -87,5 +88,6 @@ module.exports = {
 
     }
   },
-  logger: loggerConfig
+  logger: loggerConfig,
+  orm: ormrConfig
 }

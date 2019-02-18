@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm"
+import { Entity, Index, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
 import { Base } from './fragment/base'
 import { FlightInfo } from './FlightInfo'
 
 @Entity()
+@Index(["dAirportTlc", "dCityTlc"], { unique: true })
 export class FlightRoute extends Base {
 
   @PrimaryGeneratedColumn()
@@ -64,6 +65,6 @@ export class FlightRoute extends Base {
   })
   aAirportName: string
 
-  @OneToOne(type => FlightInfo)
-  flightInfo: FlightInfo
+  @OneToMany(type => FlightInfo, flightInfo => flightInfo.flightRoute)
+  flightInfos: FlightInfo[]
 }

@@ -1,4 +1,5 @@
 const loggerConfig = require('./log/log4js.config.default')
+const ormrConfig = require('./orm/orm.config.default')
 module.exports = {
   chromeOptions: {
     ignoreHTTPSErrors: true,
@@ -25,5 +26,6 @@ module.exports = {
     },
     rawFlightInfoListSavePath: './raw-data/flight-info-list/'
   },
-  logger: loggerConfig
+  logger: loggerConfig,
+  orm: ormrConfig
 }

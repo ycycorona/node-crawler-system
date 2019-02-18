@@ -1,8 +1,9 @@
 import JSONSpider from "source/spider/web/JSONSpider"
 import { getConnection, createConnection } from "typeorm"
-import {FlightInfo} from "../../../orm/entity/FlightInfo"
-import { StopInfo } from "../../../orm/entity/StopInfo"
-import { CabinInfo } from "../../../orm/entity/CabinInfo"
+import { FlightInfo } from "orm/entity/FlightInfo"
+import { StopInfo } from "orm/entity/StopInfo"
+import { CabinInfo } from "orm/entity/CabinInfo"
+import { FlightRoute } from "orm/entity/FlightRoute"
 
 export default class FlightInfoSpider extends JSONSpider {
 
@@ -14,6 +15,7 @@ export default class FlightInfoSpider extends JSONSpider {
    * @returns {Array}
    */
   async parse(extractedData: {[propName: string]: any}): Promise<any> {
+
     let flag = true
     if (!(extractedData.status === 0 && extractedData.data.error===null)) {
       flag = false
@@ -60,13 +62,16 @@ export default class FlightInfoSpider extends JSONSpider {
   }
 
   async persist(flightInfoList: any[]): Promise<boolean> {
+    const nowDate = new Date()
     const connection = getConnection()
     const FlightInfoRepo = connection.getRepository(FlightInfo)
     const StopInfoRepo = connection.getRepository(StopInfo)
     const CabinInfoRepo = connection.getRepository(CabinInfo)
+    const FlightRouteRepo = connection.getRepository(FlightRoute)
 
 
     for (const flightInfo of flightInfoList) {
+      flightInfo.getTime = nowDate
       const flightInfoEntity = FlightInfoRepo.create(<FlightInfo>flightInfo)
 
       const cabinInfos = <CabinInfo[]> (flightInfo.cabins || []).map((rawCabin: any) => {
@@ -83,14 +88,36 @@ export default class FlightInfoSpider extends JSONSpider {
         return StopInfoRepo.create(<StopInfo>rawStopInfo_1)
       })
 
+      const flightRouteRaw = {
+        dAirportTlc: flightInfo.departureAirportInfo.airportTlc,
+        dCityTlc: flightInfo.departureAirportInfo.cityTlc,
+        dAirportName: flightInfo.departureAirportInfo.airportName,
+        dCityName: flightInfo.departureAirportInfo.cityName,
+        aAirportTlc: flightInfo.arrivalAirportInfo.cityName,
+        aCityTlc: flightInfo.arrivalAirportInfo.cityName,
+        aAirportName: flightInfo.arrivalAirportInfo.cityName,
+        aCityName: flightInfo.arrivalAirportInfo.cityName
+      }
+
+      let flightRoute: FlightRoute = null
+      const flightRouteGet = FlightRouteRepo.create(<FlightRoute>flightRouteRaw)
+
+      const flightRouteDb = await FlightRouteRepo.findOne(flightRouteGet)
+      if (!flightRouteDb) {
+        await FlightRouteRepo.save(flightRouteGet)
+        flightRoute = flightRouteGet
+      } else {
+        flightRoute = flightRouteDb
+      }
+
       await CabinInfoRepo.save(cabinInfos)
       await StopInfoRepo.save(stopInfos)
+
+      flightInfoEntity.flightRoute = flightRoute
       flightInfoEntity.cabinInfos = cabinInfos
       flightInfoEntity.stopInfos = stopInfos
       await FlightInfoRepo.save(flightInfoEntity)
-      console.log('finish')
     }
-
     return true
   }
 

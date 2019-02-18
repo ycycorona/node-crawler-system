@@ -25,7 +25,7 @@ export default class FlightInfoCrawler extends Crawler {
     const dateList = util.getDateList(dateStart, dateEnd) // 日期列表初始化
 
     let requests: Request[] = []
-    // 构建所有的爬虫
+    // 构建所有的蜘蛛
     for (const flightLine of flightLines) {
       for (const date of dateList) {
         const requestData = {
@@ -62,7 +62,7 @@ export default class FlightInfoCrawler extends Crawler {
     this
     .setRequests(requests)
     .setSpider(
-      spiderIns
+      spiderIns, 5
     )
   }
 }

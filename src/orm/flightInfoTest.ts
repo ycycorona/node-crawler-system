@@ -1,12 +1,38 @@
 // import "reflect-metadata"
+import * as _config from 'config'
+const config: any = _config
 import { createConnection } from "typeorm"
-import { FlightInfo } from "./entity/FlightInfo"
-import { FlightRoute } from "./entity/FlightRoute"
-import { StopInfo } from "./entity/StopInfo"
-import { CabinInfo } from "./entity/CabinInfo"
+import { FlightInfo } from "orm/entity/FlightInfo"
+import { FlightRoute } from "orm/entity/FlightRoute"
+import { StopInfo } from "orm/entity/StopInfo"
+import { CabinInfo } from "orm/entity/CabinInfo"
 
-
-createConnection()
+// {
+//   "type": "mysql",
+//   "host": "47.105.46.120",
+//   "port": 60001,
+//   "username": "root",
+//   "password": "ycy6323892",
+//   "database": "media_db",
+//   "synchronize": false,
+//   "logging": false,
+//   "logger": "file",
+//   "entities": [
+//      "D:\\code\\personal\\node-crawler-system\\dist\\orm\\entity\\**\\*.js"
+//   ],
+//   "migrations": [
+//      "dist/orm/migration/**/*.js"
+//   ],
+//   "subscribers": [
+//      "dist/orm/subscriber/**/*.js"
+//   ],
+//   "cli": {
+//      "entitiesDir": "src/orm/entity",
+//      "migrationsDir": "src/orm/migration",
+//      "subscribersDir": "src/orm/subscriber"
+//   }
+// }
+createConnection(config.orm)
 .then(async connection => {
   const rawData: any = {
     "airlineName": "海南航空",

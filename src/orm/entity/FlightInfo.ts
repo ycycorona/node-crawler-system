@@ -1,8 +1,9 @@
-import {Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn} from "typeorm"
+import {Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, OneToMany, JoinColumn} from "typeorm"
 import { Base } from './fragment/base'
 import { FlightRoute } from "./FlightRoute"
 import { StopInfo } from "./StopInfo"
 import { CabinInfo } from "./CabinInfo"
+
 
 @Entity()
 export class FlightInfo extends Base {
@@ -58,8 +59,7 @@ export class FlightInfo extends Base {
     })
     flightNumber: string
 
-    @OneToOne(type => FlightRoute)
-    @JoinColumn()
+    @ManyToOne(type => FlightRoute)
     flightRoute: FlightRoute
 
     @OneToMany(type => StopInfo, stopInfo => stopInfo.flightInfo)
